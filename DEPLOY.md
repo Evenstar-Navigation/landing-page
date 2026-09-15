@@ -48,20 +48,34 @@ is still published, the domain stops resolving entirely** — not degraded, a ha
 outage — for every DNSSEC-validating resolver, which includes Google's own 8.8.8.8.
 Site and email both go down at once, the moment the nameserver change saves.
 
-Before step 3 (switching nameservers), do one of:
+Before step 3 (switching nameservers), disable DNSSEC in the Wix domain panel,
+wait for the DS record to clear from the registry, *then* switch nameservers.
+Re-enable DNSSEC in Cloudflare afterwards if you want it back — that's a separate,
+safe step once Cloudflare is authoritative.
 
-- **Disable DNSSEC in the Wix domain panel first**, wait for the DS record to clear
-  from the registry (`dig evenstarnav.com DS +short` returns nothing), *then* switch
-  nameservers. Re-enable DNSSEC in Cloudflare afterwards if you want it back — it's a
-  separate, safe step once Cloudflare is authoritative.
-- Or, if Wix's panel exposes it, update the DS record to match the DS Cloudflare
-  will publish for the new key — this is fiddlier and disabling first is simpler.
+### ⚠️ Wix bundles this with WHOIS privacy — one toggle, not two
 
-Do not skip verifying this. Confirm before switching nameservers:
+Confirmed 2026-09-15: Wix's "Turn off protection" dialog is titled **"Turn off
+privacy and DNSSEC protection"** — there is no way to disable DNSSEC alone. Doing
+this publishes your registrant contact info (name, address, phone, email) to public
+WHOIS for as long as the domain remains at Wix afterwards.
+
+**Decision made:** hold off on this toggle until immediately before step 3, not
+during step 1. Do step 2 (Cloudflare account + zone import) first — none of that
+requires DNSSEC to be off. Only flip the Wix toggle once you're actually ready to
+switch nameservers within the same session, to keep the public-WHOIS window as short
+as possible.
+
+Cloudflare Registrar gives free WHOIS redaction by default on `.com`, so privacy is
+restored automatically — at no extra cost — once the registrar transfer (step 5)
+completes. The exposure is temporary, not permanent, but it's real in the meantime.
+
+When you do reach this point, confirm before switching nameservers:
 
     dig evenstarnav.com DS +short      # must be EMPTY before you switch NS
 
-If it isn't empty, stop and disable DNSSEC at Wix first.
+If it isn't empty, the toggle hasn't taken effect yet — wait and re-check before
+proceeding.
 
 ## 2. Create the company Cloudflare account and import the zone
 
@@ -142,7 +156,7 @@ correct for a few days.
 - [x] 1. Wix DNS panel screenshotted — confirmed exact match to dig baseline
 - [ ] 2. Company Cloudflare account created (shared mailbox, not personal)
 - [ ] 2. Imported zone diffed against step 1 — MX, SPF, DKIM, DMARC all verified
-- [ ] 3. **DNSSEC disabled at Wix; `dig evenstarnav.com DS +short` confirmed empty — before switching nameservers**
+- [ ] 3. DNSSEC/privacy toggled off at Wix (do this LAST, right before switching NS — exposes WHOIS); `dig evenstarnav.com DS +short` confirmed empty
 - [ ] 3. Nameservers switched; MX verified; test email sent and received
 - [ ] 4. Pages project deployed; `*.pages.dev` checked
 - [ ] 4. Custom domains added; https live on apex and www
