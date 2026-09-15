@@ -3,14 +3,18 @@
 Static landing page for EvenStar Navigation. No build step, no dependencies.
 
     index.html    home
-    about.html    about + team  (served at /about by Cloudflare Pages)
+    about.html    about + team  (served at /about -- GitHub Pages resolves
+                  extensionless URLs to .html natively, no config needed)
     style.css     all styles
     img/          images
-    _headers      security + cache headers (Cloudflare Pages)
+    _headers      security + cache headers -- INERT on GitHub Pages (this is a
+                  Cloudflare/Netlify convention). Left in place in case this ever
+                  sits behind Cloudflare's proxy later; does nothing today.
 
 ## Editing
 
-Open the HTML, change the text, commit, push. Cloudflare Pages deploys on push to `main`.
+Open the HTML, change the text, commit, push. GitHub Pages redeploys on push to `main`
+(usually live within a minute or two -- check the Actions tab for build status).
 
 To preview locally:
 
