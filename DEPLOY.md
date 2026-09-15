@@ -19,21 +19,49 @@ Domain expires **2026-11-20**. Transferring adds a year, so do step 5 before the
 
 ## 1. Record what Wix is serving today
 
-Before touching anything, dump the current DNS so you can diff against it later:
+**Done — see `../dns-baseline-2026-09-15.txt`.** Re-run this if a lot of time passes
+before step 3, so the baseline stays current:
 
     dig evenstarnav.com ANY +noall +answer
     dig evenstarnav.com MX +short
     dig evenstarnav.com TXT +short
     dig www.evenstarnav.com +short
 
-Save that output. Also open the Wix DNS panel and screenshot every record —
-`dig` only shows what's queried, not the full zone. Pay attention to:
+Also open the Wix DNS panel and screenshot every record — `dig` only shows what's
+queried, not the full zone. Pay attention to:
 
 - **MX** — five `aspmx.l.google.com` entries (priorities 10/20/30/40/50)
 - **TXT** — Google site verification, and SPF (`v=spf1 include:_spf.google.com ~all`)
 - **DKIM** — usually `google._domainkey` as a TXT or CNAME
 - **DMARC** — `_dmarc` TXT, if set
 - any subdomains in use
+
+### ⚠️ DNSSEC is active on this domain — read this before step 3
+
+The baseline capture found a **DS record published at the `.com` registry** for
+evenstarnav.com. That means DNSSEC is switched on. This is not mentioned in the
+original version of this doc and it is the single biggest risk in this whole
+migration:
+
+**If you switch nameservers to Cloudflare while a DS record for the old (Wix) key
+is still published, the domain stops resolving entirely** — not degraded, a hard
+outage — for every DNSSEC-validating resolver, which includes Google's own 8.8.8.8.
+Site and email both go down at once, the moment the nameserver change saves.
+
+Before step 3 (switching nameservers), do one of:
+
+- **Disable DNSSEC in the Wix domain panel first**, wait for the DS record to clear
+  from the registry (`dig evenstarnav.com DS +short` returns nothing), *then* switch
+  nameservers. Re-enable DNSSEC in Cloudflare afterwards if you want it back — it's a
+  separate, safe step once Cloudflare is authoritative.
+- Or, if Wix's panel exposes it, update the DS record to match the DS Cloudflare
+  will publish for the new key — this is fiddlier and disabling first is simpler.
+
+Do not skip verifying this. Confirm before switching nameservers:
+
+    dig evenstarnav.com DS +short      # must be EMPTY before you switch NS
+
+If it isn't empty, stop and disable DNSSEC at Wix first.
 
 ## 2. Create the company Cloudflare account and import the zone
 
@@ -110,9 +138,11 @@ correct for a few days.
 
 ## Checklist
 
-- [ ] 1. Existing DNS dumped and screenshotted
+- [x] 1. Existing DNS dumped — `../dns-baseline-2026-09-15.txt`
+- [ ] 1. Wix DNS panel screenshotted (dig doesn't show the full zone)
 - [ ] 2. Company Cloudflare account created (shared mailbox, not personal)
 - [ ] 2. Imported zone diffed against step 1 — MX, SPF, DKIM, DMARC all verified
+- [ ] 3. **DNSSEC disabled at Wix; `dig evenstarnav.com DS +short` confirmed empty — before switching nameservers**
 - [ ] 3. Nameservers switched; MX verified; test email sent and received
 - [ ] 4. Pages project deployed; `*.pages.dev` checked
 - [ ] 4. Custom domains added; https live on apex and www
