@@ -155,8 +155,8 @@ this one.
 
 - [x] 1. DNS baseline recorded and confirmed against the Wix panel
 - [x] 2. Repo made public
-- [ ] 3. `CNAME` file committed and pushed
-- [ ] 4. GitHub Pages enabled, building from `main` / root
+- [x] 3. `CNAME` file committed and pushed
+- [x] 4. GitHub Pages enabled, building from `main` / root
 - [x] 5. Apex A records updated to the four GitHub IPs; old Wix A records removed
 - [x] 5. `www` CNAME updated to `evenstar-navigation.github.io`
 - [x] 6. Site confirmed live and correct (verified via public resolvers, direct content check, and a real device on cellular data)
