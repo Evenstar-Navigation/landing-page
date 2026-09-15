@@ -160,6 +160,6 @@ this one.
 - [x] 5. Apex A records updated to the four GitHub IPs; old Wix A records removed
 - [x] 5. `www` CNAME updated to `evenstar-navigation.github.io`
 - [x] 6. Site confirmed live and correct (verified via public resolvers, direct content check, and a real device on cellular data)
-- [ ] 6. HTTPS cert still provisioning at GitHub — not yet enforced, needs a bit more time
+- [x] 6. HTTPS cert issued and Enforce HTTPS turned on -- apex redirects to www over https, both confirmed 2026-09-15
 - [ ] 6. Test email sent and received — confirms MX untouched
 - [ ] 7. Wix hosting/site plan cancelled (registration and nameservers left alone)
