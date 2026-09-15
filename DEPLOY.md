@@ -135,21 +135,23 @@ and DNS were never touched.
 
 ---
 
-## Later, optional, fully separate: registrar consolidation
+## Registrar transfer — now in progress, destination: Squarespace
 
-Nothing above requires this. If at some point the ~$10–20/year difference and
-having DNS + hosting + registrar in one account is worth it, the path is:
+Decided 2026-09-15. Not Google -- Google exited domain registration entirely
+(sold "Google Domains" to Squarespace in Sept 2023; Google Cloud Domains stopped
+accepting new registrations/transfers in Jan 2024). Squarespace is, literally,
+what Google Domains became.
 
-1. Transfer the domain from Wix to any registrar that allows nameserver changes
-   (Namecheap, Porkbun, etc. — not Cloudflare directly, per the constraint above).
-2. Wait the ICANN-mandated 60 days.
-3. Transfer from that registrar to Cloudflare (or wherever).
-4. Only then does the DNSSEC/WHOIS-exposure trade-off from the original plan
-   become relevant — and by then Cloudflare Registrar's free WHOIS redaction
-   applies automatically once the second transfer completes.
+Verified before choosing it: Squarespace Domains supports toggling to custom
+nameservers as a normal self-service feature -- does NOT have Wix's lock-in
+behavior. Renewal is ~$20/year (vs ~$10-15 at Namecheap/Porkbun) -- a known,
+accepted trade-off, not an oversight.
 
-Treat this as its own project with its own go/no-go decision, not a follow-on to
-this one.
+Steps: Wix -> Domains -> Domain Actions -> Transfer away from Wix -> unlock ->
+accept the DNSSEC/privacy toggle (unavoidable for any outbound transfer, unlike
+the Workspace transfer) -> Wix emails an EPP/auth code -> enter it at
+domains.squarespace.com's transfer flow. No 60-day wait -- that constraint was
+specific to Cloudflare's onboarding, not Wix or registrars generally.
 
 ## Checklist
 
