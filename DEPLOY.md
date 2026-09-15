@@ -139,7 +139,7 @@ correct for a few days.
 ## Checklist
 
 - [x] 1. Existing DNS dumped — `../dns-baseline-2026-09-15.txt`
-- [ ] 1. Wix DNS panel screenshotted (dig doesn't show the full zone)
+- [x] 1. Wix DNS panel screenshotted — confirmed exact match to dig baseline
 - [ ] 2. Company Cloudflare account created (shared mailbox, not personal)
 - [ ] 2. Imported zone diffed against step 1 — MX, SPF, DKIM, DMARC all verified
 - [ ] 3. **DNSSEC disabled at Wix; `dig evenstarnav.com DS +short` confirmed empty — before switching nameservers**
